@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.labs.download.link.service" version="1.0">
+
+    <documentation>
+        A service that provides methods to handle public download links
+    </documentation>
+
+    <implementation class="org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl" />
+
+    <service>
+        <provide interface="org.nuxeo.labs.download.link.service.PublicDownloadLinkService" />
+    </service>
+
+</component>
