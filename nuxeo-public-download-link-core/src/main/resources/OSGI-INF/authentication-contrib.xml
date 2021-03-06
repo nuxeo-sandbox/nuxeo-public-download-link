@@ -1,27 +1,10 @@
 <component name="org.nuxeo.labs.download.link.authentication">
 
-    <extension target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService"
-               point="authenticators">
-        <authenticationPlugin name="PUBLIC_DOWNLOAD_AUTH" enabled="true"
-                              class="org.nuxeo.labs.download.link.auth.PublicDownloadAuthenticator">
-            <needStartingURLSaving>false</needStartingURLSaving>
-            <stateful>false</stateful>
-            <loginModulePlugin>Trusting_LM</loginModulePlugin>
-        </authenticationPlugin>
-    </extension>
-
-    <extension point="specificChains"
+    <extension point="openUrl"
                target="org.nuxeo.ecm.platform.ui.web.auth.service.PluggableAuthenticationService">
-        <specificAuthenticationChain name="PublicDownload">
-            <urlPatterns>
-                <url>(.*)/nxfile/.*</url>
-            </urlPatterns>
-            <replacementChain>
-                <plugin>PUBLIC_DOWNLOAD_AUTH</plugin>
-                <plugin>BASIC_AUTH</plugin>
-                <plugin>FORM_AUTH</plugin>
-            </replacementChain>
-        </specificAuthenticationChain>
+        <openUrl name="PublicDownload">
+            <grantPattern>/nuxeo/nxpublicfile/.*</grantPattern>
+        </openUrl>
     </extension>
 
 </component>

@@ -25,19 +25,17 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.transaction.TransactionHelper;
 
+/**
+ * Using a class in the same package as the download service in order to access protected attributes in DownloadBlobInfo
+ */
 public class PublicDownloadHelper {
 
-    public static final String PUBLIC_DOWNLOAD_TOKEN_PARAM = "download_token";
-
-    public static boolean isValidPublicDownloadURL(String path, String token) {
-        return TransactionHelper.runInTransaction(() -> {
-            DownloadBlobInfo downloadBlobInfo = new DownloadBlobInfo(path);
-            CoreSession session = CoreInstance.getCoreSession(downloadBlobInfo.repository);
-            DocumentModel doc = session.getDocument(new IdRef(downloadBlobInfo.docId));
-            PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
-            return publicDownloadLinkService.isValidToken(doc,token);
-        });
+    public static boolean isValidPublicDownloadRequest(String path, String token) {
+        DownloadBlobInfo downloadBlobInfo = new DownloadBlobInfo(path);
+        CoreSession session = CoreInstance.getCoreSession(downloadBlobInfo.repository);
+        DocumentModel doc = session.getDocument(new IdRef(downloadBlobInfo.docId));
+        PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
+        return publicDownloadLinkService.isValidToken(doc, token);
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<fragment version="1">
+
+  <extension target="web#SERVLET">
+    <servlet>
+      <servlet-name>Nuxeo Public Downloader</servlet-name>
+      <servlet-class>
+        org.nuxeo.labs.download.link.servlet.PublicDownloadServlet
+      </servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>Nuxeo Public Downloader</servlet-name>
+      <url-pattern>/nxpublicfile/*</url-pattern>
+    </servlet-mapping>
+  </extension>
+
+</fragment>
