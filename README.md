@@ -30,6 +30,19 @@ Obviously it does check the validity of download requests using the token in the
 ### An Automation Operation
 The Automation operation provides an API to generate public download links. This can be leveraged in webui for example.
 
+Example:
+```
+curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automation/CreatePublicDownloadLink' \
+--header 'Authorization: Basic ...' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "input":"doc:/default-domain/workspaces/test/mydoc",
+    "params": {
+        "xpath":"file:content"
+    }
+}'
+```
+
 ## Known limitations
 The permission are not managed by xpath yet. A token is valid for all xpath in a document. 
 
