@@ -19,6 +19,7 @@
 
 package org.nuxeo.labs.download.link;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +64,8 @@ public class TestCreatePublicDownloadLinkOp {
         OperationChain chain = new OperationChain("TestGetDownloadLinkOp");
         chain.add(CreatePublicDownloadLinkOp.ID);
         Blob blob = (Blob) as.run(ctx, chain);
-        Assert.assertNotNull(blob);
+        JSONObject object = new JSONObject(blob.getString());
+        Assert.assertNotNull(object.getString("url"));
     }
 
 }

@@ -19,6 +19,7 @@
 
 package org.nuxeo.labs.download.link.automation;
 
+import org.json.JSONObject;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -64,7 +65,9 @@ public class CreatePublicDownloadLinkOp {
     public Blob run(DocumentModel doc)  {
         publicDownloadLinkService.setPublicDownloadPermission(doc);
         session.saveDocument(doc);
-        return new StringBlob(publicDownloadLinkService.getPublicDownloadLink(doc,xpath));
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc,xpath);
+        String jsonString = new JSONObject().put("url", url).toString();
+        return new StringBlob(jsonString,"application/json");
     }
 
 }
