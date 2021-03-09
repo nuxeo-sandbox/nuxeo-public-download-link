@@ -117,7 +117,7 @@ public class TestPublicDownloadServlet {
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(401,response.getStatus());
+        assertEquals(404,response.getStatus());
     }
 
     @Test

@@ -24,12 +24,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentSecurityException;
 import org.nuxeo.ecm.core.io.download.DownloadService;
-import org.nuxeo.ecm.core.io.download.PublicDownloadHelper;
 import org.nuxeo.ecm.platform.ui.web.download.DownloadServlet;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.api.login.NuxeoLoginContext;
-import org.nuxeo.runtime.transaction.TransactionHelper;
 
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,16 +68,11 @@ public class PublicDownloadServlet extends DownloadServlet {
         }
 
         try (NuxeoLoginContext loginContext = Framework.loginUser(TRANSIENT_USER_PREFIX+token)) {
-            boolean isValid = TransactionHelper.runInTransaction(() -> PublicDownloadHelper.isValidPublicDownloadRequest(path,token));
-            if (isValid) {
-                DownloadService downloadService = Framework.getService(DownloadService.class);
-                downloadService.handleDownload(httpRequest, httpResponse, baseUrl, NXFILE+"/"+path);
-            } else {
-                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            }
+            DownloadService downloadService = Framework.getService(DownloadService.class);
+            downloadService.handleDownload(httpRequest, httpResponse, baseUrl, NXFILE+"/"+path);
         } catch (LoginException | DocumentSecurityException e) {
             log.warn(e);
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
