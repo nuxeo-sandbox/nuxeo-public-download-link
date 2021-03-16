@@ -28,7 +28,7 @@ The servlet is not behind the platform authentication filter and does not requir
 Obviously it does check the validity of download requests using the token in the URL.
 
 ### An Automation Operation
-The Automation operation provides an API to generate public download links. This can be leveraged in webui for example.
+Two Automation operations provides an API to generate and revoke public download links. This can be leveraged in webui for example.
 
 Example:
 ```
@@ -44,7 +44,7 @@ curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automati
 ```
 
 ## Known limitations
-The permission are not managed by xpath yet. A token is valid for all xpath in a document. 
+The permission start and end dates are not supported yet.
 
 ## About Nuxeo
 [Nuxeo](https://www.nuxeo.com), developer of the leading Content Services Platform, is reinventing enterprise content management (ECM) and digital asset management (DAM). Nuxeo is fundamentally changing how people work with data and content to realize new value from digital information. Its cloud-native platform has been deployed by large enterprises, mid-sized businesses and government agencies worldwide. Customers like Verizon, Electronic Arts, ABN Amro, and the Department of Defense have used Nuxeo's technology to transform the way they do business. Founded in 2008, the company is based in New York with offices across the United States, Europe, and Asia.
