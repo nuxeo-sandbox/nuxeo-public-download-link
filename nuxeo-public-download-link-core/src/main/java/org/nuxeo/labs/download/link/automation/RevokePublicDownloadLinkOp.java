@@ -19,27 +19,24 @@
 
 package org.nuxeo.labs.download.link.automation;
 
-import org.json.JSONObject;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
-import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 
 @Operation(
-        id = CreatePublicDownloadLinkOp.ID,
+        id = RevokePublicDownloadLinkOp.ID,
         category = Constants.CAT_DOCUMENT,
-        label = "Get a public download url",
-        description = "Get a public download url")
-public class CreatePublicDownloadLinkOp {
+        label = "Revoke a public download url",
+        description = "Revoke a public download url")
+public class RevokePublicDownloadLinkOp {
 
-    public static final String ID = "CreatePublicDownloadLink";
+    public static final String ID = "RevokePublicDownloadLink";
 
     @Context
     protected CoreSession session;
@@ -51,24 +48,28 @@ public class CreatePublicDownloadLinkOp {
     protected PublicDownloadLinkService publicDownloadLinkService;
 
     @Param(name = "xpath", required = false, description = "File xpath")
-    protected String xpath="file:content";
+    protected String xpath = "file:content";
+
+    @Param(name = "all", required = false, description = "Set to true to revoke all links")
+    protected boolean all = false;
 
     @Param(name = "save", required = false, description = "Set to true to save the document")
     protected boolean save = true;
 
     @OperationMethod
-    public Blob run(DocumentModel doc)  {
-        if (!publicDownloadLinkService.hasPublicDownloadPermission(doc,xpath)) {
-            publicDownloadLinkService.setPublicDownloadPermission(doc,xpath);
-            if (save) {
-                session.saveDocument(doc);
-            }
+    public DocumentModel run(DocumentModel doc) {
+        boolean changed = false;
+        if (all) {
+            publicDownloadLinkService.removePublicDownloadPermissions(doc);
+            changed = true;
+        } else if (publicDownloadLinkService.hasPublicDownloadPermission(doc, xpath)) {
+            publicDownloadLinkService.removePublicDownloadPermission(doc, xpath);
+            changed = true;
         }
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(xpath, publicDownloadLinkService.getPublicDownloadLink(doc,xpath));
-
-        return new StringBlob(jsonObject.toString(),"application/json");
+        if (changed && save) {
+            session.saveDocument(doc);
+        }
+        return doc;
     }
 
 }

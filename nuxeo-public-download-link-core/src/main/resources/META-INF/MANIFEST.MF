@@ -8,4 +8,5 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-public-download-link-core;singleton=true
 Nuxeo-Component: OSGI-INF/authentication-contrib.xml,
     OSGI-INF/service-contrib.xml,
-    OSGI-INF/automation-contrib.xml
+    OSGI-INF/automation-contrib.xml,
+    OSGI-INF/enrichers-contrib.xml

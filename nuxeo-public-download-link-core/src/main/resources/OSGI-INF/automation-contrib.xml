@@ -3,6 +3,7 @@
     <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
                point="operations">
         <operation class="org.nuxeo.labs.download.link.automation.CreatePublicDownloadLinkOp"/>
+        <operation class="org.nuxeo.labs.download.link.automation.RevokePublicDownloadLinkOp"/>
     </extension>
 
 </component>

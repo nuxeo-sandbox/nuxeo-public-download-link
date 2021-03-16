@@ -17,7 +17,7 @@
  *     Michael Vachette
  */
 
-package org.nuxeo.labs.download.link;
+package org.nuxeo.labs.download.link.automation;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -39,6 +39,9 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
 import javax.inject.Inject;
 
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+
 @RunWith(FeaturesRunner.class)
 @Features({AutomationFeature.class})
 @RepositoryConfig(cleanup = Granularity.METHOD)
@@ -57,7 +60,7 @@ public class TestCreatePublicDownloadLinkOp {
     TestHelper th;
 
     @Test
-    public void testGetDownloadLink() throws Exception {
+    public void testGetOneDownloadLink() throws Exception {
         OperationContext ctx = new OperationContext();
         ctx.setInput(th.getTestDocument(session));
         ctx.setCoreSession(session);
@@ -65,7 +68,21 @@ public class TestCreatePublicDownloadLinkOp {
         chain.add(CreatePublicDownloadLinkOp.ID);
         Blob blob = (Blob) as.run(ctx, chain);
         JSONObject object = new JSONObject(blob.getString());
-        Assert.assertNotNull(object.getString("url"));
+        String url = object.getString(FILE_CONTENT);
+        Assert.assertNotNull(url);
+    }
+
+    @Test
+    public void testGetOneDownloadLinkWithXpath() throws Exception {
+        OperationContext ctx = new OperationContext();
+        ctx.setInput(th.getTestDocument(session));
+        ctx.setCoreSession(session);
+        OperationChain chain = new OperationChain("TestGetDownloadLinkOp");
+        chain.add(CreatePublicDownloadLinkOp.ID).set("xpath",FILES_FILES);
+        Blob blob = (Blob) as.run(ctx, chain);
+        JSONObject object = new JSONObject(blob.getString());
+        String url = object.getString(FILES_FILES);
+        Assert.assertNotNull(url);
     }
 
 }

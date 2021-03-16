@@ -64,12 +64,12 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void sendError(int sc, String msg) throws IOException {
-        setStatus(sc);
+        status = sc;
     }
 
     @Override
     public void sendError(int sc) throws IOException {
-        setStatus(sc);
+        status = sc;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setStatus(int sc, String sm) {
-
+        status = sc;
     }
 
     @Override

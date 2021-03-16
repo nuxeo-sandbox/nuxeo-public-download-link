@@ -40,7 +40,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.nuxeo.labs.download.link.TestPublicDownloadServlet.FILE_CONTENT;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
 
 @RunWith(FeaturesRunner.class)
 @Features({PlatformFeature.class, TransactionalFeature.class})
@@ -60,38 +61,97 @@ public class TestPublicDownloadLinkService {
     TestHelper th;
 
     @Test
+    public void testhasNoPermission() {
+        DocumentModel doc = th.getTestDocument(session);
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+    }
+
+    @Test
+    public void testhasPermission() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+    }
+
+    @Test
+    public void testhasPermissionOnDifferentFile() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILES_FILES));
+    }
+
+    @Test
     public void testSetPermission() {
         DocumentModel doc = th.getTestDocument(session);
-        String token = publicDownloadLinkService.setPublicDownloadPermission(doc);
+        String token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
         assertTrue(StringUtils.isNotEmpty(token));
-        assertTrue(publicDownloadLinkService.isValidToken(doc,token));
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
     }
 
     @Test
     public void testSetPermissionTwice() {
         DocumentModel doc = th.getTestDocument(session);
-        String token = publicDownloadLinkService.setPublicDownloadPermission(doc);
-        String token2 = publicDownloadLinkService.setPublicDownloadPermission(doc);
+        String token = publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT);
+        String token2 = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
         assertEquals(token2,token);
     }
 
     @Test
+    public void testSetPermissionMultipleXpath() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILES_FILES);
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILES_FILES));
+    }
+
+    @Test
+    public void testRemovePermission() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+        publicDownloadLinkService.removePublicDownloadPermission(doc,FILE_CONTENT);
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+    }
+
+    @Test
+    public void testRemoveOnePermission() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILES_FILES);
+        publicDownloadLinkService.removePublicDownloadPermission(doc,FILE_CONTENT);
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+        assertTrue(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILES_FILES));
+    }
+
+    @Test
+    public void testRemoveAllPermissions() {
+        DocumentModel doc = th.getTestDocument(session);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILES_FILES);
+        publicDownloadLinkService.removePublicDownloadPermissions(doc);
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILE_CONTENT));
+        assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILES_FILES));
+    }
+
+
+    @Test
     public void testInvalidTokenWhenNoPermission() {
         DocumentModel doc = th.getTestDocument(session);
-        assertFalse(publicDownloadLinkService.isValidToken(doc,"abc"));
+        assertFalse(publicDownloadLinkService.isValidToken(doc, FILE_CONTENT,"abc"));
     }
 
     @Test
     public void testInvalidToken() {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc);
-        assertFalse(publicDownloadLinkService.isValidToken(doc,"abc"));
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        assertFalse(publicDownloadLinkService.isValidToken(doc,FILE_CONTENT,"abc"));
     }
 
     @Test
     public void testGetDownloadLinkWhenPermission() {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
         String link = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT);
         assertTrue(StringUtils.isNotEmpty(link));
     }

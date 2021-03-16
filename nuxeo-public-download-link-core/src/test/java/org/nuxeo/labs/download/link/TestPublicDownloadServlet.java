@@ -48,6 +48,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
 import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
 import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
 
@@ -60,7 +62,6 @@ import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl
 public class TestPublicDownloadServlet {
 
     public static final String HOST = "http://localhost";
-    public static final String FILE_CONTENT = "file:content";
 
     @Inject
     public CoreSession session;
@@ -84,7 +85,7 @@ public class TestPublicDownloadServlet {
     public void setup() {
         Framework.getProperties().put("nuxeo.url",HOST);
         doc = th.getTestDocument(session);
-        token = publicDownloadLinkService.setPublicDownloadPermission(doc);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
         doc = session.saveDocument(doc);
         transactionalFeature.nextTransaction();
     }
@@ -135,5 +136,38 @@ public class TestPublicDownloadServlet {
 
         assertEquals(400,response.getStatus());
     }
+
+    @Test
+    public void testWithTokenAndWrongXpath() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT).replace(FILE_CONTENT,FILES_FILES);
+
+        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
+
+        new PublicDownloadServlet().doGet(request, response);
+
+        assertEquals(404,response.getStatus());
+    }
+
+    @Test
+    public void testWithValidTokenAndWrongDocument() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        DocumentModel substituteDoc = th.getTestDocument(session);
+
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT).replace(doc.getId(),substituteDoc.getId());
+
+        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
+
+        new PublicDownloadServlet().doGet(request, response);
+
+        assertEquals(404,response.getStatus());
+    }
+
 
 }

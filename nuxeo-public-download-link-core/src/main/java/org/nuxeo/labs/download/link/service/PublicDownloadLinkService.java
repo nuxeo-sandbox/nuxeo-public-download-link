@@ -21,20 +21,39 @@ package org.nuxeo.labs.download.link.service;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
 
+import java.util.Map;
+
 public interface PublicDownloadLinkService {
 
     /**
-     * Set an ACL to allow public download
      * @param doc
-     * @return the ACL name
+     * @param xpath
+     * @return true if there is a permission for the given xpath
      */
-    public String setPublicDownloadPermission(DocumentModel doc);
+    public boolean hasPublicDownloadPermission(DocumentModel doc, String xpath);
+
 
     /**
-     * Remove existing ACL to allow public download
+     * Set an ACL to allow public download for the given xpath
+     * @param doc
+     * @param xpath
+     * @return the ACL name
+     */
+    public String setPublicDownloadPermission(DocumentModel doc, String xpath);
+
+    /**
+     * Remove existing ACL to allow public download for the given xpath
+     * @param doc
+     * @param xpath
+     */
+    public void removePublicDownloadPermission(DocumentModel doc, String xpath);
+
+
+    /**
+     * Remove all existing ACL to allow public download
      * @param doc
      */
-    public void removePublicDownloadPermission(DocumentModel doc);
+    public void removePublicDownloadPermissions(DocumentModel doc);
 
     /**
      * Get the public download link
@@ -44,13 +63,20 @@ public interface PublicDownloadLinkService {
      */
     public String getPublicDownloadLink(DocumentModel doc, String xpath);
 
+    /**
+     * Get all the existing public download link for the given document
+     * @param doc the document
+     * @return a map where the key is the xpath and the value the download link
+     */
+    public Map<String,String> getAllPublicDownloadLink(DocumentModel doc);
 
     /**
      *
      * @param doc
+     * @param xpath
      * @param token
      * @return true is the token is valid
      */
-    public boolean isValidToken(DocumentModel doc, String token);
+    public boolean isValidToken(DocumentModel doc, String xpath, String token);
 
 }
