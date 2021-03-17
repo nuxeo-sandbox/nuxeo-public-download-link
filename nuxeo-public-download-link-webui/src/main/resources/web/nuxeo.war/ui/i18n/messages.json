@@ -1,0 +1,10 @@
+{
+  "nuxeo.public.download.action.label": "Public Download Link",
+  "nuxeo.public.download.dialog.title": "Public Download Link",
+  "nuxeo.public.download.select.xpath": "Select a File",
+  "nuxeo.public.download.link": "Download Link",
+  "nuxeo.public.download.button.copy": "Copy Link",
+  "nuxeo.public.download.button.revoke": "Revoke Link",
+  "nuxeo.public.download.button.create": "Create Link",
+  "nuxeo.public.download.button.close": "Close"
+}

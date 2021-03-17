@@ -1,0 +1,223 @@
+<!--
+`nuxeo-public-download-action`
+@group Nuxeo UI
+@element nuxeo-public-download-action
+-->
+<dom-module id="nuxeo-public-download-action">
+  <template>
+    <style include="nuxeo-action-button-styles nuxeo-styles iron-flex iron-flex-alignment">
+      nuxeo-input {
+        cursor: pointer;
+        overflow: hidden;
+        @apply --layout-flex;
+      }
+
+      nuxeo-select {
+        margin-bottom: 48px;
+      }
+
+      #copy,
+      #revoke {
+        margin-top: 16px;
+      }
+    </style>
+
+
+    <nuxeo-operation id="createLinkOp" input="[[input]]" params="[[params]]" op="CreatePublicDownloadLink">
+    </nuxeo-operation>
+
+    <nuxeo-operation id="revokeLinkOp" input="[[input]]" params="[[params]]" op="RevokePublicDownloadLink">
+    </nuxeo-operation>
+
+    <div class="action" on-tap="_toggleDialog">
+      <paper-icon-button id="bt" icon="[[icon]]"></paper-icon-button>
+      <span class="label" hidden$="[[!showLabel]]">[[i18n(label)]]</span>
+    </div>
+    <paper-tooltip for="bt">[[i18n(label)]]</paper-tooltip>
+
+    <nuxeo-dialog id="dialog" on-iron-overlay-closed="_dialogClosed" with-backdrop>
+      <h2>[[i18n('nuxeo.public.download.dialog.title')]]</h2>
+      <div class="content">
+        <nuxeo-select name="xpathSelect" role="widget" label="[[i18n('nuxeo.public.download.select.xpath')]]" options="[[xpaths]]" selected="{{xpath}}"></nuxeo-select>
+        <template is="dom-if" if="[[_haslink(links,xpath,updateFlag)]]">
+          <div class="layout horizontal">
+            <nuxeo-input id="downloadLink" label="[[i18n('nuxeo.public.download.link')]]" value="[[_getlink(links,xpath,updateFlag)]]" autofocus readonly>
+            </nuxeo-input>
+            <paper-icon-button id="copy" icon="icons:content-copy" on-tap="_copyPermalink"></paper-icon-button>
+            <paper-tooltip for="copy">[[i18n('nuxeo.public.download.button.copy')]]</paper-tooltip>
+            <paper-icon-button id="revoke" icon="nuxeo:delete" on-tap="_deleteLink"></paper-icon-button>
+            <paper-tooltip for="revoke">[[i18n('nuxeo.public.download.button.revoke')]]</paper-tooltip>
+          </div>
+        </template>
+        <template is="dom-if" if="[[!_haslink(links,xpath,updateFlag)]]">
+          <div class="layout horizontal">
+            <paper-button on-tap="_createLink" class="secondary">[[i18n('nuxeo.public.download.button.create')]]</paper-button>
+          </div>
+        </template>
+      </div>
+      <div class="buttons">
+        <paper-button noink dialog-dismiss on-tap="_close" class="primary">[[i18n('nuxeo.public.download.button.close')]]</paper-button>
+      </div>
+    </nuxeo-dialog>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'nuxeo-public-download-action',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * Label to display in the action button.
+         */
+        label: {
+          type: String,
+          value: 'Action Label'
+        },
+
+        /**
+         * `true` if the action should display the label, `false` otherwise.
+         */
+        showLabel: {
+          type: Boolean,
+          value: false,
+        },
+
+        /**
+         * Icon to use (iconset_name:icon_name) in the action button.
+         */
+        icon: {
+          type: String,
+          value: 'iconset_name:icon_name'
+        },
+
+        document: {
+          type: Object,
+          observer: '_documentChanged'
+        },
+
+        xpaths: {
+          type: Array,
+          computed: '_buildXpaths(document)'
+        },
+
+        xpath: {
+          type: String,
+          value: 'file:content'
+        },
+
+        links: {
+          type: Object,
+          value: function() {
+            return {}
+          }
+        },
+
+        updateFlag: {
+          type: Number,
+          value: 0
+        }
+
+      },
+
+      _toggleDialog: function() {
+        this.$.dialog.toggle();
+      },
+
+      _documentChanged: function(document) {
+        if (document && document.contextParameters && document.contextParameters.publicDownload) {
+          this.set('links', document.contextParameters.publicDownload);
+        } else {
+          this.set('links', {});
+        }
+      },
+
+      _buildXpaths: function(document) {
+        let xpaths = [{
+          id: 'file:content',
+          label: this.i18n('Main File')
+        }];
+
+        if (document.facets.includes('Picture')) {
+          document.properties['picture:views'].forEach((view, index) => {
+            xpaths.push({
+              id: `picture:views/${index}/content`,
+              label: this.i18n(view.title)
+            });
+          });
+        } else if (document.facets.includes('Video')) {
+          document.properties['vid:transcodedVideos'].forEach((video, index) => {
+            xpaths.push({
+              id: `vid:transcodedVideos/${index}/content`,
+              label: this.i18n(video.name)
+            });
+          });
+        }
+        return xpaths;
+      },
+
+      _haslink: function(links, xpath) {
+        return links && xpath && links[xpath];
+      },
+
+      _getlink: function(links, xpath) {
+        return links[xpath];
+      },
+
+      _createLink: function() {
+        if (!this.document) {
+          return;
+        }
+        this.input = 'doc:' + this.document.uid;
+        this.params = {
+          xpath: this.xpath
+        }
+        this.$.createLinkOp.execute().then(response => {
+          this.links[this.xpath] = response[this.xpath];
+          this.updateFlag++;
+        }).catch(error => {
+          this.fire('notify', {
+            message: this.i18n('nuxeo.public.download.create.failure')
+          });
+        }).finally(function() {
+          //todo
+        }.bind(this));
+      },
+
+      _deleteLink: function() {
+        if (!this.document) {
+          return;
+        }
+        this.input = 'doc:' + this.document.uid;
+        this.params = {
+          xpath: this.xpath
+        }
+        this.$.revokeLinkOp.execute().then(response => {
+          delete this.links[this.xpath];
+          this.updateFlag++;
+        }).catch(error => {
+          this.fire('notify', {
+            message: this.i18n('nuxeo.public.download.revoke.failure')
+          });
+        }).finally(function() {
+          //todo
+        }.bind(this));
+      },
+
+      _copyPermalink: function() {
+        this._selectPermalink();
+        window.document.execCommand('copy');
+      },
+
+      _selectPermalink: function() {
+        let inputElement = this.shadowRoot.querySelector('#downloadLink');
+        if (!inputElement) {
+          return;
+        }
+        inputElement.$.paperInput.inputElement.inputElement.select();
+      }
+
+    });
+  </script>
+</dom-module>
