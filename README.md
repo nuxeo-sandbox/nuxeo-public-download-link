@@ -43,6 +43,18 @@ curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automati
 }'
 ```
 
+### User Interface
+
+The plugin contains a webui contribution which adds a document action. The action is available for all non folderish documents by default.
+
+![UI action screenshot](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/documentation/screenshot_action.png)
+
+The action opens a dialog from where users can create and revoke public download links
+
+![UI Dialog screenshot](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/documentation/screenshot_dialog.png)
+
+
+
 ## Known limitations
 The permission start and end dates are not supported yet.
 
