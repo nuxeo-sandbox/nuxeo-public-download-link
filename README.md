@@ -14,10 +14,11 @@ mvn clean install
 ### Relies on existing features
 This plugin relies on the platform download service and permission framework. 
 
-Some of the benefits of this approach are:
+Some benefits of this approach are:
 * there is no escalation of privileges to process the download request.
+* [file download permissions](https://doc.nuxeo.com/nxdoc/file-download-security-policies/) are still enforced
 * download links can be limited in time and easily revoked
-* all the existing download features are available: byte range, S3 direct download, Cloudfront integration... 
+* all the existing download features are available: byte range, S3 direct download, Cloudfront integration...
 
 ### Permissions
 Public links contains a token which is used as the ID of a READ permission ACL on the target Document.
@@ -27,10 +28,10 @@ The ACL is set for a transient user (not a real user) which name is "transient/"
 The servlet is not behind the platform authentication filter and does not require authentication. 
 Obviously it does check the validity of download requests using the token in the URL.
 
-### An Automation Operation
+### Automation Operations
 Two Automation operations provides an API to generate and revoke public download links. This can be leveraged in webui for example.
 
-Example:
+Create a download link
 ```
 curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automation/CreatePublicDownloadLink' \
 --header 'Authorization: Basic ...' \
@@ -43,6 +44,30 @@ curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automati
 }'
 ```
 
+Revoke a download link
+```
+curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automation/RevokePublicDownloadLink' \
+--header 'Authorization: Basic ...' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "input":"doc:/default-domain/workspaces/test/mydoc",
+    "params": {
+        "xpath":"file:content"
+    }
+}'
+```
+
+### API enricher 
+The plugin provides an [API document enricher](https://doc.nuxeo.com/nxdoc/content-enrichers/) to fetch all the existing download links on a document
+
+Example:
+```
+curl --location --request GET 'http://localhost:8080/nuxeo/api/v1/path/default-domain/workspaces/mydoc' \
+--header 'Authorization: Basic ...' \
+--header 'Content-Type: application/json' \
+--header 'enrichers-document: publicDownload'
+```
+
 ### User Interface
 
 The plugin contains a webui contribution which adds a document action. The action is available for all non folderish documents by default.
@@ -52,8 +77,6 @@ The plugin contains a webui contribution which adds a document action. The actio
 The action opens a dialog from where users can create and revoke public download links
 
 ![UI Dialog screenshot](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/blob/master/documentation/screenshot_dialog.png)
-
-
 
 ## Known limitations
 The permission start and end dates are not supported yet.
