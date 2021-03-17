@@ -70,17 +70,21 @@ public class PublicDownloadLinkServiceImpl implements PublicDownloadLinkService 
     @Override
     public void removePublicDownloadPermission(DocumentModel doc, String xpath) {
         ACL[] acls = getExistingDownloadPermission(doc, xpath);
+        ACP acp = doc.getACP();
         for (ACL acl : acls) {
-            doc.getACP().removeACL(acl.getName());
+            acp.removeACL(acl.getName());
         }
+        doc.setACP(acp, true);
     }
 
     @Override
     public void removePublicDownloadPermissions(DocumentModel doc) {
         ACL[] acls = getExistingDownloadPermissions(doc);
+        ACP acp = doc.getACP();
         for (ACL acl : acls) {
-            doc.getACP().removeACL(acl.getName());
+            acp.removeACL(acl.getName());
         }
+        doc.setACP(acp, true);
     }
 
     @Override
@@ -104,7 +108,7 @@ public class PublicDownloadLinkServiceImpl implements PublicDownloadLinkService 
         Map<String,String> links = new HashMap<>();
         for(ACL acl : acls) {
             String name = acl.getName();
-            String xpath = name.substring(PUBLIC_DOWNLOAD_ACL_PREFIX.length()+1,name.lastIndexOf('/'));
+            String xpath = name.substring(PUBLIC_DOWNLOAD_ACL_PREFIX.length(),name.lastIndexOf('/'));
             links.put(xpath,getPublicDownloadLink(doc,xpath));
         }
         return links;
@@ -133,7 +137,7 @@ public class PublicDownloadLinkServiceImpl implements PublicDownloadLinkService 
     }
 
     public String getACLPrefix(String xpath) {
-        return PUBLIC_DOWNLOAD_ACL_PREFIX+"/"+xpath+"/";
+        return PUBLIC_DOWNLOAD_ACL_PREFIX+xpath+"/";
     }
 
 }
