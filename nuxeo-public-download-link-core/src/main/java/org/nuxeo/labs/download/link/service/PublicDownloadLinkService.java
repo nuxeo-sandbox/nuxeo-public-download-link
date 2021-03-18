@@ -37,7 +37,7 @@ public interface PublicDownloadLinkService {
      * Set an ACL to allow public download for the given xpath
      * @param doc
      * @param xpath
-     * @return the ACL name
+     * @return the token
      */
     public String setPublicDownloadPermission(DocumentModel doc, String xpath);
 

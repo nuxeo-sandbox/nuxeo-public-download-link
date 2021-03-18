@@ -1,0 +1,7 @@
+<component name="org.nuxeo.labs.download.link.builder.aws">
+    <#if (org.nuxeo.labs.download.link.service.cloudfront.enable)??>
+        <extension target="org.nuxeo.labs.download.link.service" point="builder">
+            <builder class="org.nuxeo.labs.download.link.aws.CloudfrontPublicDownloadLinkBuilder"/>
+        </extension>
+    </#if>
+</component>

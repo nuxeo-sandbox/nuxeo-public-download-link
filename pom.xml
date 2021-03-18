@@ -26,6 +26,7 @@
     <module>nuxeo-public-download-link-package</module>
     <module>nuxeo-public-download-link-docker</module>
     <module>nuxeo-public-download-link-webui</module>
+    <module>nuxeo-public-download-link-aws</module>
   </modules>
 
   <scm />
@@ -56,6 +57,11 @@
       <dependency>
         <groupId>org.nuxeo.labs.public.link</groupId>
         <artifactId>nuxeo-public-download-link-webui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.labs.public.link</groupId>
+        <artifactId>nuxeo-public-download-link-aws</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

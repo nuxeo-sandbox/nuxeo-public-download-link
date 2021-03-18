@@ -134,7 +134,6 @@ public class TestPublicDownloadLinkService {
         assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc,FILES_FILES));
     }
 
-
     @Test
     public void testInvalidTokenWhenNoPermission() {
         DocumentModel doc = th.getTestDocument(session);

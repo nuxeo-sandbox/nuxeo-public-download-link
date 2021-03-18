@@ -78,6 +78,11 @@ The action opens a dialog from where users can create and revoke public download
 
 ![UI Dialog screenshot](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/blob/master/documentation/screenshot_dialog.png)
 
+### Cloudfront and Edge Lambda support
+
+When cloudfront integration is enabled, this plugin can generate a cloudfront url. An edge lambda function is used to validate the link by calling the Nuxeo Application on the [origin request event](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-cloudfront-trigger-events.html).
+By using this particular event, the lambda function is called only if the target file is not already cached in cloudfront.
+
 ## Known limitations
 The permission start and end dates are not supported yet.
 
