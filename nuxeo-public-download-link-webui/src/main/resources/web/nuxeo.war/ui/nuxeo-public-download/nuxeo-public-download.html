@@ -19,8 +19,7 @@ limitations under the License.
 
 <nuxeo-slot-content name="publicDownloadAction" slot="DOCUMENT_ACTIONS">
   <template>
-    <nuxeo-filter document="[[document]]" permission="Everything"
-                  expression="(document.facets.indexOf('Folderish') === -1 || document.facets.indexOf('Collection') === -1)">
+    <nuxeo-filter document="[[document]]" permission="Everything" expression="document.properties['file:content']">
       <template>
         <nuxeo-public-download-action document="{{document}}" icon="icons:language" label="nuxeo.public.download.action.label"></nuxeo-public-download-action>
       </template>
