@@ -4,4 +4,5 @@ nuxeo-public-download-link.target=.
 # Set list of templates to include, comma separated values.
 nuxeo.template.includes=common
 
-#org.nuxeo.labs.download.link.service.cloudfront.enable
+#org.nuxeo.labs.download.link.service.cloudfront.enable=
+#nuxeo.s3storage.cloudfront.distribId=

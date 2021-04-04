@@ -89,6 +89,22 @@ Edit nuxeo.conf and add the following property:
 
 ```
 org.nuxeo.labs.download.link.service.cloudfront.enable=true
+Addnuxeo.s3storage.cloudfront.distribId=MY_CLOUDFRONT_DISTRIBUTION_ID
+```
+
+The following AWS permissions must be granted to the role used by the nuxeo application
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "cloudfront:CreateInvalidation",
+            "Resource": "arn:aws:cloudfront::customer_id:distribution/distribution_id"
+        }
+    ]
+}
 ```
 
 # Known limitations
