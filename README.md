@@ -83,13 +83,13 @@ The action opens a dialog from where users can create and revoke public download
 When cloudfront integration is enabled, this plugin can generate a cloudfront url. An edge lambda function is used to validate the link by calling the Nuxeo Application on the [origin request event](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-cloudfront-trigger-events.html).
 By using this particular event, the lambda function is called only if the target file is not already cached in cloudfront.
 
-Setup information at available in [there](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/blob/master/aws/nuxeo-public-download-edge-lambda/README.md)
+Setup information available [here](https://github.com/nuxeo-sandbox/nuxeo-public-download-link/blob/master/aws/nuxeo-public-download-edge-lambda/README.md)
 
 Edit nuxeo.conf and add the following property:
 
 ```
 org.nuxeo.labs.download.link.service.cloudfront.enable=true
-Addnuxeo.s3storage.cloudfront.distribId=MY_CLOUDFRONT_DISTRIBUTION_ID
+nuxeo.s3storage.cloudfront.distribId=MY_CLOUDFRONT_DISTRIBUTION_ID
 ```
 
 The following AWS permissions must be granted to the role used by the nuxeo application
@@ -109,7 +109,6 @@ The following AWS permissions must be granted to the role used by the nuxeo appl
 
 # Known limitations
 * The permission start and end dates are not supported yet.
-* AWS Cloudfront invalidation request when a link is revoked not yet implemented.
 
 # Support
 
