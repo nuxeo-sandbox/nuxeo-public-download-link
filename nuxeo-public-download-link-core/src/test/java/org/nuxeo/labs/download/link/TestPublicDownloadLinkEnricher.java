@@ -44,7 +44,7 @@ public class TestPublicDownloadLinkEnricher {
     @Test
     public void testEnricher() throws Exception {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, null, null);
         JsonFactory factory = new JsonFactory();
         StringWriter jsonObjectWriter = new StringWriter();
         JsonGenerator generator = factory.createGenerator(jsonObjectWriter);

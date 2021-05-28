@@ -50,6 +50,22 @@
           </div>
         </template>
         <template is="dom-if" if="[[!_haslink(links,xpath,updateFlag)]]">
+          <div>
+            <nuxeo-date-picker
+              id="begin"
+              label="[[i18n('popupPermission.from')]]"
+              value="{{permissionBegin}}"
+            >
+            </nuxeo-date-picker>
+          </div>
+          <div>
+            <nuxeo-date-picker
+              id="end"
+              label="[[i18n('popupPermission.to')]]"
+              value="{{permissionEnd}}"
+            >
+            </nuxeo-date-picker>
+          </div>
           <div class="layout horizontal">
             <paper-button on-tap="_createLink" class="secondary">[[i18n('nuxeo.public.download.button.create')]]</paper-button>
           </div>
@@ -105,6 +121,16 @@
         xpath: {
           type: String,
           value: 'file:content'
+        },
+
+        permissionBegin: {
+          type: Date,
+          value: null
+        },
+
+        permissionEnd: {
+          type: Date,
+          value: null
         },
 
         links: {
@@ -171,7 +197,10 @@
         }
         this.input = 'doc:' + this.document.uid;
         this.params = {
-          xpath: this.xpath
+          xpath: this.xpath,
+          begin: this.permissionBegin,
+          end: this.permissionEnd,
+          replace: true
         }
         this.$.createLinkOp.execute().then(response => {
           this.links[this.xpath] = response[this.xpath];

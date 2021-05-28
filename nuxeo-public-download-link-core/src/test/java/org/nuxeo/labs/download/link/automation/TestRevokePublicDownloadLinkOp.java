@@ -66,7 +66,7 @@ public class TestRevokePublicDownloadLinkOp {
     @Test
     public void testRevokeDownloadLink() throws Exception {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT);
+        publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         OperationContext ctx = new OperationContext();
         ctx.setInput(doc);
         ctx.setCoreSession(session);
@@ -79,7 +79,7 @@ public class TestRevokePublicDownloadLinkOp {
     @Test
     public void testRevokeDownloadLinkWithXpath() throws Exception {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES);
+        publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES, null, null);
         OperationContext ctx = new OperationContext();
         ctx.setInput(doc);
         ctx.setCoreSession(session);
@@ -92,8 +92,8 @@ public class TestRevokePublicDownloadLinkOp {
     @Test
     public void testRevokeAllDownloadLink() throws Exception {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT);
-        publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES);
+        publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
+        publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES, null, null);
         OperationContext ctx = new OperationContext();
         ctx.setInput(doc);
         ctx.setCoreSession(session);

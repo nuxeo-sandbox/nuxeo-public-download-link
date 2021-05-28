@@ -29,6 +29,7 @@ import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.labs.download.link.automation.CreatePublicDownloadLinkOp;
@@ -42,12 +43,13 @@ import javax.inject.Inject;
 import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
 import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class})
+@Features({ AutomationFeature.class })
 @RepositoryConfig(cleanup = Granularity.METHOD)
-@Deploy({
-        "nuxeo-public-download-link-core"
-})
+@Deploy({ "nuxeo-public-download-link-core" })
 public class TestCreatePublicDownloadLinkOp {
 
     @Inject
@@ -78,10 +80,52 @@ public class TestCreatePublicDownloadLinkOp {
         ctx.setInput(th.getTestDocument(session));
         ctx.setCoreSession(session);
         OperationChain chain = new OperationChain("TestGetDownloadLinkOp");
-        chain.add(CreatePublicDownloadLinkOp.ID).set("xpath",FILES_FILES);
+        chain.add(CreatePublicDownloadLinkOp.ID).set("xpath", FILES_FILES);
         Blob blob = (Blob) as.run(ctx, chain);
         JSONObject object = new JSONObject(blob.getString());
         String url = object.getString(FILES_FILES);
+        Assert.assertNotNull(url);
+    }
+
+    @Test
+    public void testGetOneDownloadLinkWithDates() throws Exception {
+        OperationContext ctx = new OperationContext();
+        
+        DocumentModel doc = th.getTestDocument(session);
+        ctx.setInput(doc);
+        ctx.setCoreSession(session);
+
+        Calendar begin = new GregorianCalendar();
+        begin.add(Calendar.DAY_OF_MONTH, -1);
+        Calendar end = new GregorianCalendar();
+        end.add(Calendar.DAY_OF_MONTH, 1);
+
+        OperationChain chain = new OperationChain("TestGetDownloadLinkOp");
+        chain.add(CreatePublicDownloadLinkOp.ID).set("begin", begin).set("end", end);
+        Blob blob = (Blob) as.run(ctx, chain);
+        JSONObject object = new JSONObject(blob.getString());
+        String url = object.getString(FILE_CONTENT);
+        Assert.assertNotNull(url);
+    }
+
+    @Test
+    public void testGetOneDownloadLinkWithJKLJKLDates() throws Exception {
+        OperationContext ctx = new OperationContext();
+        
+        DocumentModel doc = th.getTestDocument(session);
+        ctx.setInput(doc);
+        ctx.setCoreSession(session);
+
+        Calendar begin = new GregorianCalendar();
+        begin.add(Calendar.DAY_OF_MONTH, 10);
+        Calendar end = new GregorianCalendar();
+        end.add(Calendar.DAY_OF_MONTH, 100);
+
+        OperationChain chain = new OperationChain("TestGetDownloadLinkOp");
+        chain.add(CreatePublicDownloadLinkOp.ID).set("begin", begin).set("end", end);
+        Blob blob = (Blob) as.run(ctx, chain);
+        JSONObject object = new JSONObject(blob.getString());
+        String url = object.getString(FILE_CONTENT);
         Assert.assertNotNull(url);
     }
 

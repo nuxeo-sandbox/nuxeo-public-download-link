@@ -19,6 +19,8 @@
 
 package org.nuxeo.labs.download.link.automation;
 
+import java.util.Calendar;
+
 import org.json.JSONObject;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.core.Constants;
@@ -32,11 +34,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 
-@Operation(
-        id = CreatePublicDownloadLinkOp.ID,
-        category = Constants.CAT_DOCUMENT,
-        label = "Get a public download url",
-        description = "Get a public download url")
+@Operation(id = CreatePublicDownloadLinkOp.ID, category = Constants.CAT_DOCUMENT, label = "Get a public download url", description = "Get a public download url")
 public class CreatePublicDownloadLinkOp {
 
     public static final String ID = "CreatePublicDownloadLink";
@@ -51,24 +49,45 @@ public class CreatePublicDownloadLinkOp {
     protected PublicDownloadLinkService publicDownloadLinkService;
 
     @Param(name = "xpath", required = false, description = "File xpath")
-    protected String xpath="file:content";
+    protected String xpath = "file:content";
+
+    @Param(name = "begin", required = false, description = "Public link start date")
+    protected Calendar begin;
+
+    @Param(name = "end", required = false, description = "Public link end date")
+    protected Calendar end;
+
+    @Param(name = "replace", required = false, description = "Replace an existing eprmission, if any")
+    protected boolean replace = false;
 
     @Param(name = "save", required = false, description = "Set to true to save the document")
     protected boolean save = true;
 
     @OperationMethod
-    public Blob run(DocumentModel doc)  {
-        if (!publicDownloadLinkService.hasPublicDownloadPermission(doc,xpath)) {
-            publicDownloadLinkService.setPublicDownloadPermission(doc,xpath);
+    public Blob run(DocumentModel doc) {
+        
+        boolean hasPermission = publicDownloadLinkService.hasPublicDownloadPermission(doc, xpath);
+        
+        boolean addPermission = true;
+        if(hasPermission) {
+            if(replace) {
+                publicDownloadLinkService.removePublicDownloadPermission(doc, xpath);
+            } else {
+               addPermission = false;
+            }
+        }
+        
+        if (addPermission) {
+            publicDownloadLinkService.setPublicDownloadPermission(doc, xpath, begin, end);
             if (save) {
                 session.saveDocument(doc);
             }
         }
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(xpath, publicDownloadLinkService.getPublicDownloadLink(doc,xpath));
+        jsonObject.put(xpath, publicDownloadLinkService.getPublicDownloadLink(doc, xpath));
 
-        return new StringBlob(jsonObject.toString(),"application/json");
+        return new StringBlob(jsonObject.toString(), "application/json");
     }
 
 }

@@ -74,7 +74,7 @@ public class TestCloudfrontPublicDownloadLinkBuilder {
         doc.setPropertyValue("file:content", (Serializable) blob);
         doc = session.createDocument(doc);
 
-        String token = publicDownloadLinkService.setPublicDownloadPermission(doc, "file:content");
+        String token = publicDownloadLinkService.setPublicDownloadPermission(doc, "file:content", null, null);
         String link = publicDownloadLinkService.getPublicDownloadLink(doc, "file:content");
 
         assertNotNull(link);

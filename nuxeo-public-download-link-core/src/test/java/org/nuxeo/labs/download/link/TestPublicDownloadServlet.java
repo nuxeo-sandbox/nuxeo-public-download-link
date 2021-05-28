@@ -43,6 +43,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -54,11 +56,9 @@ import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl
 import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
 
 @RunWith(FeaturesRunner.class)
-@Features({PlatformFeature.class, TransactionalFeature.class})
+@Features({ PlatformFeature.class, TransactionalFeature.class })
 @RepositoryConfig(cleanup = Granularity.METHOD)
-@Deploy({
-    "nuxeo-public-download-link-core"
-})
+@Deploy({ "nuxeo-public-download-link-core" })
 public class TestPublicDownloadServlet {
 
     public static final String HOST = "http://localhost";
@@ -79,13 +79,14 @@ public class TestPublicDownloadServlet {
     TestHelper th;
 
     public DocumentModel doc;
+
     public String token;
 
     @Before
     public void setup() {
-        Framework.getProperties().put("nuxeo.url",HOST);
+        Framework.getProperties().put("nuxeo.url", HOST);
         doc = th.getTestDocument(session);
-        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         doc = session.saveDocument(doc);
         transactionalFeature.nextTransaction();
     }
@@ -95,14 +96,14 @@ public class TestPublicDownloadServlet {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = new MockHttpServletResponse();
 
-        String url = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT);
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(200,response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -111,14 +112,14 @@ public class TestPublicDownloadServlet {
         HttpServletResponse response = new MockHttpServletResponse();
 
         String url = downloadService.getFullDownloadUrl(doc, FILE_CONTENT, (Blob) doc.getPropertyValue(FILE_CONTENT),
-                HOST + "/").replace(NXFILE,PUBLIC_DOWNLOAD_PATH);
+                HOST + "/").replace(NXFILE, PUBLIC_DOWNLOAD_PATH);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn("456");
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(404,response.getStatus());
+        assertEquals(404, response.getStatus());
     }
 
     @Test
@@ -127,14 +128,14 @@ public class TestPublicDownloadServlet {
         HttpServletResponse response = new MockHttpServletResponse();
 
         String url = downloadService.getFullDownloadUrl(doc, FILE_CONTENT, (Blob) doc.getPropertyValue(FILE_CONTENT),
-                HOST + "/").replace(NXFILE,PUBLIC_DOWNLOAD_PATH);
+                HOST + "/").replace(NXFILE, PUBLIC_DOWNLOAD_PATH);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(null);
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(400,response.getStatus());
+        assertEquals(400, response.getStatus());
     }
 
     @Test
@@ -142,14 +143,15 @@ public class TestPublicDownloadServlet {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = new MockHttpServletResponse();
 
-        String url = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT).replace(FILE_CONTENT,FILES_FILES);
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT)
+                                              .replace(FILE_CONTENT, FILES_FILES);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(404,response.getStatus());
+        assertEquals(404, response.getStatus());
     }
 
     @Test
@@ -159,15 +161,61 @@ public class TestPublicDownloadServlet {
 
         DocumentModel substituteDoc = th.getTestDocument(session);
 
-        String url = publicDownloadLinkService.getPublicDownloadLink(doc,FILE_CONTENT).replace(doc.getId(),substituteDoc.getId());
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT)
+                                              .replace(doc.getId(), substituteDoc.getId());
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
 
         new PublicDownloadServlet().doGet(request, response);
 
-        assertEquals(404,response.getStatus());
+        assertEquals(404, response.getStatus());
     }
 
+    @Test
+    public void testWithTokenAndValidDates() throws IOException {
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT);
+        
+        // Now that we have the link, change the permission
+        publicDownloadLinkService.removePublicDownloadPermissions(doc);
+        Calendar begin = new GregorianCalendar();
+        begin.add(Calendar.DAY_OF_MONTH, -1);
+        Calendar end = new GregorianCalendar();
+        end.add(Calendar.DAY_OF_MONTH, 1);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, begin, end);
+
+        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
+
+        new PublicDownloadServlet().doGet(request, response);
+
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void testWithTokenAndInvalidDates() throws IOException {
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = new MockHttpServletResponse();
+
+        String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT);
+        
+        // Now that we have the link, change the permission
+        publicDownloadLinkService.removePublicDownloadPermissions(doc);
+        Calendar begin = new GregorianCalendar();
+        begin.add(Calendar.DAY_OF_MONTH, 10);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, begin, null);
+
+        when(request.getRequestURL()).thenReturn(new StringBuffer(url));
+        when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
+
+        new PublicDownloadServlet().doGet(request, response);
+
+        assertEquals(404, response.getStatus());
+    }
 
 }
