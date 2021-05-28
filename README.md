@@ -9,29 +9,41 @@ cd nuxeo-public-download-link
 mvn clean install
 ```
 
+To build the plugin without building the Docker image, use:
+
+```
+mvn -DskipDocker=true clean install
+```
+
+
 # Plugin Features
 
 ## Relies on existing features
 This plugin relies on the platform download service and permission framework. 
 
 Some benefits of this approach are:
-* there is no escalation of privileges to process the download request.
+
+* There is no escalation of privileges to process the download request.
 * [file download permissions](https://doc.nuxeo.com/nxdoc/file-download-security-policies/) are still enforced
-* download links can be limited in time and easily revoked
-* all the existing download features are available: byte range, S3 direct download, Cloudfront integration...
+* Download links can be limited in time and easily revoked
+* All the existing download features are available: byte range, S3 direct download, CloudFront integration...
 
 ## Permissions
 Public links contains a token which is used as the ID of a READ permission ACL on the target Document.
+
 The ACL is set for a transient user (not a real user) which name is "transient/" + token.
+
+Like other permissions, the public download permission can have a start date and and end date.
 
 ## A public download servlet
 The servlet is not behind the platform authentication filter and does not require authentication. 
 Obviously it does check the validity of download requests using the token in the URL.
 
 ## Automation Operations
-Two Automation operations provides an API to generate and revoke public download links. This can be leveraged in webui for example.
+Two Automation operations provides an API to generate and revoke public download links. This can be leveraged in WebUI for example.
 
-Create a download link
+#### Create a download link
+
 ```
 curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automation/CreatePublicDownloadLink' \
 --header 'Authorization: Basic ...' \
@@ -44,7 +56,18 @@ curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automati
 }'
 ```
 
-Revoke a download link
+Besides the `xpath` parameter (which defaults to `file:content`) the other (optional) parameters available for this operations are:
+
+* `begin`: A date, start of the permission. Default is `null`
+* `end`: A date, end of the permission. Default is `null`
+* `replace`:
+  * If a public download link permission already existed, it will be replaced with this new one. Else, nothing is changed (the operation does not add a new permission on top of the previous one.) Default is `false`
+  * Notice: If a permission has a `begin` date in the future, it still is considered as an existing permission that will be possibly replaced.
+* `save`: If `true`, the document is explicitly saved. Default is `true`
+
+
+#### Revoke a download link
+
 ```
 curl --location --request POST 'http://localhost:8080/nuxeo/site/api/v1/automation/RevokePublicDownloadLink' \
 --header 'Authorization: Basic ...' \
