@@ -130,9 +130,6 @@ The following AWS permissions must be granted to the role used by the nuxeo appl
 }
 ```
 
-# Known limitations
-* The permission start and end dates are not supported yet.
-
 # Support
 
 **These features are not part of the Nuxeo Production platform.**
