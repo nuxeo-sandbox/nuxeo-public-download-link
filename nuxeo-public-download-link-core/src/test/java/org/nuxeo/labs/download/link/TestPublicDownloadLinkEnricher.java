@@ -1,7 +1,11 @@
 package org.nuxeo.labs.download.link;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+
+import java.io.StringWriter;
+
+import javax.inject.Inject;
+
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,18 +22,13 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
-import javax.inject.Inject;
-
-import java.io.StringWriter;
-
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
 @RepositoryConfig(cleanup = Granularity.METHOD)
-@Deploy({
-        "nuxeo-public-download-link-core"
-})
+@Deploy({ "nuxeo-public-download-link-core" })
 public class TestPublicDownloadLinkEnricher {
 
     @Inject
@@ -44,12 +43,12 @@ public class TestPublicDownloadLinkEnricher {
     @Test
     public void testEnricher() throws Exception {
         DocumentModel doc = th.getTestDocument(session);
-        publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, null, null);
+        publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         JsonFactory factory = new JsonFactory();
         StringWriter jsonObjectWriter = new StringWriter();
         JsonGenerator generator = factory.createGenerator(jsonObjectWriter);
         generator.writeStartObject();
-        new PublicDownloadLinkEnricher().write(generator,doc);
+        new PublicDownloadLinkEnricher().write(generator, doc);
         generator.writeEndObject();
         generator.close();
         String json = jsonObjectWriter.toString();

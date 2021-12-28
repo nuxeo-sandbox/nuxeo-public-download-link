@@ -19,18 +19,17 @@
 
 package org.nuxeo.labs.download.link.service;
 
-import org.nuxeo.ecm.core.api.DocumentModel;
-
 import java.util.Calendar;
 import java.util.Map;
+
+import org.nuxeo.ecm.core.api.DocumentModel;
 
 public interface PublicDownloadLinkService {
 
     /**
-     * Returns true if there is a permission for the given path.
-     * WARNING: Only checks for the existence of a permission, it does not check it is valid? An invalid permission
-     * would be a permission with start and/or end date, incompatible with the current date => in this case, the API
-     * still returns true, "there is a permission"
+     * Returns true if there is a permission for the given path. WARNING: Only checks for the existence of a permission,
+     * it does not check it is valid? An invalid permission would be a permission with start and/or end date,
+     * incompatible with the current date => in this case, the API still returns true, "there is a permission"
      * 
      * @param doc
      * @param xpath

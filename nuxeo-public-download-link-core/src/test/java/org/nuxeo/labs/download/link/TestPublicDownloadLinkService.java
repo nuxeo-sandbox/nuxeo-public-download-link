@@ -19,6 +19,18 @@
 
 package org.nuxeo.labs.download.link;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,18 +45,6 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.TransactionalFeature;
-
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 @RunWith(FeaturesRunner.class)
 @Features({ PlatformFeature.class, TransactionalFeature.class })

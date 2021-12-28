@@ -19,6 +19,23 @@
 
 package org.nuxeo.labs.download.link;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
+import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,22 +55,6 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.TransactionalFeature;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
-import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
-import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
 
 @RunWith(FeaturesRunner.class)
 @Features({ PlatformFeature.class, TransactionalFeature.class })
@@ -179,14 +180,14 @@ public class TestPublicDownloadServlet {
         HttpServletResponse response = new MockHttpServletResponse();
 
         String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT);
-        
+
         // Now that we have the link, change the permission
         publicDownloadLinkService.removePublicDownloadPermissions(doc);
         Calendar begin = new GregorianCalendar();
         begin.add(Calendar.DAY_OF_MONTH, -1);
         Calendar end = new GregorianCalendar();
         end.add(Calendar.DAY_OF_MONTH, 1);
-        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, begin, end);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, begin, end);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);
@@ -203,12 +204,12 @@ public class TestPublicDownloadServlet {
         HttpServletResponse response = new MockHttpServletResponse();
 
         String url = publicDownloadLinkService.getPublicDownloadLink(doc, FILE_CONTENT);
-        
+
         // Now that we have the link, change the permission
         publicDownloadLinkService.removePublicDownloadPermissions(doc);
         Calendar begin = new GregorianCalendar();
         begin.add(Calendar.DAY_OF_MONTH, 10);
-        token = publicDownloadLinkService.setPublicDownloadPermission(doc,FILE_CONTENT, begin, null);
+        token = publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, begin, null);
 
         when(request.getRequestURL()).thenReturn(new StringBuffer(url));
         when(request.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM)).thenReturn(token);

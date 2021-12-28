@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.labs.download.link.enrichers">
 
-  <require>org.nuxeo.ecm.core.io.MarshallerRegistry.marshallers</require>
+    <require>org.nuxeo.ecm.core.io.MarshallerRegistry.marshallers</require>
 
-  <extension target="org.nuxeo.ecm.core.io.MarshallerRegistry" point="marshallers">
-    <register class="org.nuxeo.labs.download.link.enricher.PublicDownloadLinkEnricher" enable="true" />
-  </extension>
+    <extension target="org.nuxeo.ecm.core.io.MarshallerRegistry" point="marshallers">
+        <register class="org.nuxeo.labs.download.link.enricher.PublicDownloadLinkEnricher" enable="true"/>
+    </extension>
 
 </component>

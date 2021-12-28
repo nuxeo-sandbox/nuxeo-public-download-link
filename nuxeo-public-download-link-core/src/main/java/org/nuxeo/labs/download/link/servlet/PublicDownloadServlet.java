@@ -19,6 +19,19 @@
 
 package org.nuxeo.labs.download.link.servlet;
 
+import static org.nuxeo.ecm.core.api.NuxeoPrincipal.TRANSIENT_USER_PREFIX;
+import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
+import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
+import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.security.auth.login.LoginException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,18 +43,6 @@ import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.api.login.NuxeoLoginContext;
 import org.nuxeo.runtime.transaction.TransactionHelper;
-
-import javax.security.auth.login.LoginException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static org.nuxeo.ecm.core.api.NuxeoPrincipal.TRANSIENT_USER_PREFIX;
-import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
-import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
-import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_TOKEN_PARAM;
 
 public class PublicDownloadServlet extends DownloadServlet {
 
@@ -60,7 +61,7 @@ public class PublicDownloadServlet extends DownloadServlet {
 
         String fullPath = url.getPath();
 
-        String path = fullPath.substring(fullPath.indexOf(PUBLIC_DOWNLOAD_PATH)+PUBLIC_DOWNLOAD_PATH.length()+1);
+        String path = fullPath.substring(fullPath.indexOf(PUBLIC_DOWNLOAD_PATH) + PUBLIC_DOWNLOAD_PATH.length() + 1);
 
         String token = httpRequest.getParameter(PUBLIC_DOWNLOAD_TOKEN_PARAM);
 
@@ -69,11 +70,12 @@ public class PublicDownloadServlet extends DownloadServlet {
             return;
         }
 
-        try (NuxeoLoginContext loginContext = Framework.loginUser(TRANSIENT_USER_PREFIX+token)) {
-            boolean isValid = TransactionHelper.runInTransaction(() -> PublicDownloadHelper.isValidPublicDownloadRequest(path,token));
+        try (NuxeoLoginContext loginContext = Framework.loginUser(TRANSIENT_USER_PREFIX + token)) {
+            boolean isValid = TransactionHelper.runInTransaction(
+                    () -> PublicDownloadHelper.isValidPublicDownloadRequest(path, token));
             if (isValid) {
                 DownloadService downloadService = Framework.getService(DownloadService.class);
-                downloadService.handleDownload(httpRequest, httpResponse, baseUrl, NXFILE+"/"+path);
+                downloadService.handleDownload(httpRequest, httpResponse, baseUrl, NXFILE + "/" + path);
             } else {
                 httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }

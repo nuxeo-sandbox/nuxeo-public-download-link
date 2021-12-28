@@ -65,18 +65,18 @@ public class CreatePublicDownloadLinkOp {
 
     @OperationMethod
     public Blob run(DocumentModel doc) {
-        
+
         boolean hasPermission = publicDownloadLinkService.hasPublicDownloadPermission(doc, xpath);
-        
+
         boolean addPermission = true;
-        if(hasPermission) {
-            if(replace) {
+        if (hasPermission) {
+            if (replace) {
                 publicDownloadLinkService.removePublicDownloadPermission(doc, xpath);
             } else {
-               addPermission = false;
+                addPermission = false;
             }
         }
-        
+
         if (addPermission) {
             publicDownloadLinkService.setPublicDownloadPermission(doc, xpath, begin, end);
             if (save) {

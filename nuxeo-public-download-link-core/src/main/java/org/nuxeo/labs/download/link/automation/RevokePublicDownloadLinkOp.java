@@ -29,11 +29,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 
-@Operation(
-        id = RevokePublicDownloadLinkOp.ID,
-        category = Constants.CAT_DOCUMENT,
-        label = "Revoke a public download url",
-        description = "Revoke a public download url")
+@Operation(id = RevokePublicDownloadLinkOp.ID, category = Constants.CAT_DOCUMENT, label = "Revoke a public download url", description = "Revoke a public download url")
 public class RevokePublicDownloadLinkOp {
 
     public static final String ID = "RevokePublicDownloadLink";

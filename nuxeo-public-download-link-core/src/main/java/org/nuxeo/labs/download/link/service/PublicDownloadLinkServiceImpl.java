@@ -19,6 +19,17 @@
 
 package org.nuxeo.labs.download.link.service;
 
+import static org.nuxeo.ecm.core.api.NuxeoPrincipal.TRANSIENT_USER_PREFIX;
+import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -31,17 +42,6 @@ import org.nuxeo.ecm.core.io.download.DownloadService;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.nuxeo.ecm.core.api.NuxeoPrincipal.TRANSIENT_USER_PREFIX;
-import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
 
 public class PublicDownloadLinkServiceImpl extends DefaultComponent implements PublicDownloadLinkService {
 
@@ -67,21 +67,21 @@ public class PublicDownloadLinkServiceImpl extends DefaultComponent implements P
 
     @Override
     public boolean hasPublicDownloadPermission(DocumentModel doc, String xpath) {
-        
-        return getExistingDownloadPermission(doc,xpath).length > 0;
+
+        return getExistingDownloadPermission(doc, xpath).length > 0;
     }
-    
+
     @Override
     public boolean hasEffectivePublicDownloadPermission(DocumentModel doc, String xpath) {
-        
-        ACL[] acls = getExistingDownloadPermission(doc,xpath);
-        
+
+        ACL[] acls = getExistingDownloadPermission(doc, xpath);
+
         return filterACLsForBeginEnd(acls).length > 0;
     }
 
     @Override
     public String setPublicDownloadPermission(DocumentModel doc, String xpath) {
-        return this.setPublicDownloadPermission(doc,xpath,null,null);
+        return this.setPublicDownloadPermission(doc, xpath, null, null);
     }
 
     @Override

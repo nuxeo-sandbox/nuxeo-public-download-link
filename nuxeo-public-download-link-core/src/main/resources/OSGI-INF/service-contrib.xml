@@ -5,10 +5,10 @@
         A service that provides methods to handle public download links
     </documentation>
 
-    <implementation class="org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl" />
+    <implementation class="org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl"/>
 
     <service>
-        <provide interface="org.nuxeo.labs.download.link.service.PublicDownloadLinkService" />
+        <provide interface="org.nuxeo.labs.download.link.service.PublicDownloadLinkService"/>
     </service>
 
     <extension-point name="builder">
@@ -16,7 +16,7 @@
             An extension point to override the default build public download link.
             For example, this can be used to integrate with CDN services like AWS Cloudfront
         </documentation>
-        <object class="org.nuxeo.labs.download.link.service.PublicDownloadLinkBuilderDescriptor" />
+        <object class="org.nuxeo.labs.download.link.service.PublicDownloadLinkBuilderDescriptor"/>
     </extension-point>
 
 </component>

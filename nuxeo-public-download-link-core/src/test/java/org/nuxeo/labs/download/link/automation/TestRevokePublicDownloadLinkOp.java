@@ -19,6 +19,11 @@
 
 package org.nuxeo.labs.download.link.automation;
 
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,19 +41,11 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
-import javax.inject.Inject;
-
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
-
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class})
+@Features({ AutomationFeature.class })
 @RepositoryConfig(cleanup = Granularity.METHOD)
-@Deploy({
-        "nuxeo-public-download-link-core"
-})
+@Deploy({ "nuxeo-public-download-link-core" })
 public class TestRevokePublicDownloadLinkOp {
-
 
     @Inject
     CoreSession session;
@@ -58,7 +55,6 @@ public class TestRevokePublicDownloadLinkOp {
 
     @Inject
     PublicDownloadLinkService publicDownloadLinkService;
-
 
     @Inject
     TestHelper th;
@@ -84,7 +80,7 @@ public class TestRevokePublicDownloadLinkOp {
         ctx.setInput(doc);
         ctx.setCoreSession(session);
         OperationChain chain = new OperationChain("TestRevokeDownloadLinkOp");
-        chain.add(RevokePublicDownloadLinkOp.ID).set("xpath",FILES_FILES);
+        chain.add(RevokePublicDownloadLinkOp.ID).set("xpath", FILES_FILES);
         doc = (DocumentModel) as.run(ctx, chain);
         Assert.assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc, FILES_FILES));
     }
@@ -98,7 +94,7 @@ public class TestRevokePublicDownloadLinkOp {
         ctx.setInput(doc);
         ctx.setCoreSession(session);
         OperationChain chain = new OperationChain("TestRevokeDownloadLinkOp");
-        chain.add(RevokePublicDownloadLinkOp.ID).set("all",true);
+        chain.add(RevokePublicDownloadLinkOp.ID).set("all", true);
         doc = (DocumentModel) as.run(ctx, chain);
         Assert.assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc, FILE_CONTENT));
         Assert.assertFalse(publicDownloadLinkService.hasPublicDownloadPermission(doc, FILES_FILES));

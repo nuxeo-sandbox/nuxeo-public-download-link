@@ -19,6 +19,14 @@
 
 package org.nuxeo.labs.download.link.automation;
 
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
+import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.inject.Inject;
+
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,19 +40,10 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.labs.download.link.automation.CreatePublicDownloadLinkOp;
 import org.nuxeo.labs.download.link.helpers.TestHelper;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-
-import javax.inject.Inject;
-
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILES_FILES;
-import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 @RunWith(FeaturesRunner.class)
 @Features({ AutomationFeature.class })
@@ -90,7 +89,7 @@ public class TestCreatePublicDownloadLinkOp {
     @Test
     public void testGetOneDownloadLinkWithDates() throws Exception {
         OperationContext ctx = new OperationContext();
-        
+
         DocumentModel doc = th.getTestDocument(session);
         ctx.setInput(doc);
         ctx.setCoreSession(session);
@@ -111,7 +110,7 @@ public class TestCreatePublicDownloadLinkOp {
     @Test
     public void testGetOneDownloadLinkWithJKLJKLDates() throws Exception {
         OperationContext ctx = new OperationContext();
-        
+
         DocumentModel doc = th.getTestDocument(session);
         ctx.setInput(doc);
         ctx.setCoreSession(session);

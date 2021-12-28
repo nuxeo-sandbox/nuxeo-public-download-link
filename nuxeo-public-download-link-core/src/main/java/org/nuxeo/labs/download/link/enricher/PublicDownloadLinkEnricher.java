@@ -19,23 +19,24 @@
 
 package org.nuxeo.labs.download.link.enricher;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import static org.nuxeo.ecm.core.io.registry.reflect.Instantiations.SINGLETON;
+import static org.nuxeo.ecm.core.io.registry.reflect.Priorities.REFERENCE;
+
+import java.io.IOException;
+import java.util.Map;
+
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 import org.nuxeo.runtime.api.Framework;
 
-import java.io.IOException;
-import java.util.Map;
-
-import static org.nuxeo.ecm.core.io.registry.reflect.Instantiations.SINGLETON;
-import static org.nuxeo.ecm.core.io.registry.reflect.Priorities.REFERENCE;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 @Setup(mode = SINGLETON, priority = REFERENCE)
 public class PublicDownloadLinkEnricher extends AbstractJsonEnricher<DocumentModel> {
 
-public static final String NAME = "publicDownload";
+    public static final String NAME = "publicDownload";
 
     public PublicDownloadLinkEnricher() {
         super(NAME);
@@ -44,11 +45,11 @@ public static final String NAME = "publicDownload";
     @Override
     public void write(JsonGenerator jg, DocumentModel enriched) throws IOException {
         PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
-        Map<String,String> links = publicDownloadLinkService.getAllPublicDownloadLink(enriched);
+        Map<String, String> links = publicDownloadLinkService.getAllPublicDownloadLink(enriched);
         jg.writeFieldName(NAME);
         jg.writeStartObject();
-        for(Map.Entry<String,String> entry : links.entrySet()) {
-            jg.writeStringField(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            jg.writeStringField(entry.getKey(), entry.getValue());
         }
         jg.writeEndObject();
     }
