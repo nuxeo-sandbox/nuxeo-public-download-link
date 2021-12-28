@@ -80,6 +80,11 @@ public class PublicDownloadLinkServiceImpl extends DefaultComponent implements P
     }
 
     @Override
+    public String setPublicDownloadPermission(DocumentModel doc, String xpath) {
+        return this.setPublicDownloadPermission(doc,xpath,null,null);
+    }
+
+    @Override
     public String setPublicDownloadPermission(DocumentModel doc, String xpath, Calendar begin, Calendar end) {
         ACL[] acls = getExistingDownloadPermission(doc, xpath);
         if (acls.length <= 0) {
