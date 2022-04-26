@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
+import org.nuxeo.ecm.core.io.registry.context.RenderingContext;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 import org.nuxeo.runtime.api.Framework;
@@ -44,13 +45,18 @@ public class PublicDownloadLinkEnricher extends AbstractJsonEnricher<DocumentMod
 
     @Override
     public void write(JsonGenerator jg, DocumentModel enriched) throws IOException {
-        PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
-        Map<String, String> links = publicDownloadLinkService.getAllPublicDownloadLink(enriched);
-        jg.writeFieldName(NAME);
-        jg.writeStartObject();
-        for (Map.Entry<String, String> entry : links.entrySet()) {
-            jg.writeStringField(entry.getKey(), entry.getValue());
+        try (RenderingContext.SessionWrapper wrapper = ctx.getSession(enriched)) {
+            if (!wrapper.getSession().exists(enriched.getRef())) {
+                return;
+            }
+            PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
+            Map<String, String> links = publicDownloadLinkService.getAllPublicDownloadLink(enriched);
+            jg.writeFieldName(NAME);
+            jg.writeStartObject();
+            for (Map.Entry<String, String> entry : links.entrySet()) {
+                jg.writeStringField(entry.getKey(), entry.getValue());
+            }
+            jg.writeEndObject();
         }
-        jg.writeEndObject();
     }
 }
