@@ -35,11 +35,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.core.api.CoreInstance;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentSecurityException;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.io.download.DownloadBlobInfo;
 import org.nuxeo.ecm.core.io.download.DownloadService;
-import org.nuxeo.ecm.core.io.download.PublicDownloadHelper;
 import org.nuxeo.ecm.platform.ui.web.download.DownloadServlet;
 import org.nuxeo.ecm.platform.web.common.vh.VirtualHostHelper;
+import org.nuxeo.labs.download.link.service.PublicDownloadLinkService;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.api.login.NuxeoLoginContext;
 import org.nuxeo.runtime.transaction.TransactionHelper;
@@ -71,8 +76,14 @@ public class PublicDownloadServlet extends DownloadServlet {
         }
 
         try (NuxeoLoginContext loginContext = Framework.loginUser(TRANSIENT_USER_PREFIX + token)) {
-            boolean isValid = TransactionHelper.runInTransaction(
-                    () -> PublicDownloadHelper.isValidPublicDownloadRequest(path, token));
+            boolean isValid = TransactionHelper.runInTransaction(() -> {
+                DownloadBlobInfo downloadBlobInfo = new DownloadBlobInfo(path);
+                CoreSession session = CoreInstance.getCoreSession(downloadBlobInfo.getRepository());
+                DocumentModel doc = session.getDocument(new IdRef(downloadBlobInfo.getDocId()));
+                String xpath = downloadBlobInfo.getXpath();
+                PublicDownloadLinkService publicDownloadLinkService = Framework.getService(PublicDownloadLinkService.class);
+                return publicDownloadLinkService.isValidToken(doc, xpath, token);
+            });
             if (isValid) {
                 DownloadService downloadService = Framework.getService(DownloadService.class);
                 downloadService.handleDownload(httpRequest, httpResponse, baseUrl, NXFILE + "/" + path);
