@@ -33,8 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -51,7 +51,7 @@ import org.nuxeo.runtime.transaction.TransactionHelper;
 
 public class PublicDownloadServlet extends DownloadServlet {
 
-    private static final Log log = LogFactory.getLog(PublicDownloadServlet.class);
+    private static final Logger log = LogManager.getLogger(PublicDownloadServlet.class);
 
     protected void handleDownload(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         URL url;

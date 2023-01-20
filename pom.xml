@@ -4,12 +4,12 @@
   <parent>
     <groupId>org.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>2021.37</version>
+    <version>2023.0</version>
   </parent>
 
   <groupId>org.nuxeo.labs.public.link</groupId>
   <artifactId>nuxeo-public-download-link-parent</artifactId>
-  <version>2021.5.0-SNAPSHOT</version>
+  <version>2023.0.0-SNAPSHOT</version>
   <name>Nuxeo public download link parent</name>
   <description />
   <packaging>pom</packaging>
@@ -17,7 +17,7 @@
   <properties>
     <!-- Skip Nuxeo enforcer rules by default -->
     <nuxeo.skip.enforcer>true</nuxeo.skip.enforcer>
-    <nuxeo.target.version>2021.*</nuxeo.target.version>
+    <nuxeo.target.version>2023.*</nuxeo.target.version>
     <skipDocker>true</skipDocker>
   </properties>
 
@@ -35,19 +35,7 @@
   <issueManagement />
   <ciManagement />
   <developers />
-
-  <distributionManagement>
-    <repository>
-      <id>github</id>
-      <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/nuxeo-sandbox/nuxeo-public-download-link</url>
-    </repository>
-    <snapshotRepository>
-      <id>github</id>
-      <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/nuxeo-sandbox/nuxeo-public-download-link</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <distributionManagement />
 
   <dependencyManagement>
     <dependencies>
@@ -59,6 +47,7 @@
       <dependency>
         <groupId>org.nuxeo.labs.public.link</groupId>
         <artifactId>nuxeo-public-download-link-package</artifactId>
+        <type>pom</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -87,17 +76,19 @@
         <enabled>true</enabled>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository>
-      <id>maven-private</id>
+      <id>maven-internal</id>
       <url>https://packages.nuxeo.com/repository/maven-internal/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
