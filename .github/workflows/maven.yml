@@ -34,7 +34,12 @@ jobs:
         servers: '[{"id": "maven-private", "username": "${{ secrets.NUXEO_MAVEN_USER }}", "password": "${{ secrets.NUXEO_MAVEN_TOKEN }}"}]'
         
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -DskipDocker=true
+      run: mvn -B install --file pom.xml -DskipDocker=true
+
+    - name: Publish package
+      run: mvn --batch-mode deploy -DskipDocker=true -DskipTests=true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
