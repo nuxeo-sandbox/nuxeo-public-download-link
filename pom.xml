@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>2021.23</version>
+    <version>2021.37</version>
   </parent>
 
   <groupId>org.nuxeo.labs.public.link</groupId>
@@ -114,16 +114,5 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.spotify</groupId>
-          <artifactId>dockerfile-maven-plugin</artifactId>
-          <version>1.4.13</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 
 </project>
