@@ -16,4 +16,3 @@ LABEL com.customer.sample.build-tag=${BUILD_TAG}
 COPY --chown=nuxeo:0 target/nuxeo-public-download-link-package-*.zip /home/nuxeo/local-packages/nuxeo-public-download-link-package.zip
 
 RUN /install-packages.sh --offline /home/nuxeo/local-packages/nuxeo-public-download-link-package.zip
-RUN /install-packages.sh --clid ${NUXEO_CLID} ${PACKAGES}

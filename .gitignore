@@ -29,4 +29,4 @@ bin/
 *-bak
 *.bak
 *~gen
-nuxeo-public-download-link-docker/.env
+.env
