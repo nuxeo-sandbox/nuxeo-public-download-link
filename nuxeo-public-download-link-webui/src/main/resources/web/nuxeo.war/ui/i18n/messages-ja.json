@@ -1,0 +1,10 @@
+{
+  "nuxeo.public.download.action.label": "パブリックダウンロードリンク",
+  "nuxeo.public.download.dialog.title": "パブリックダウンロードリンク",
+  "nuxeo.public.download.select.xpath": "ファイルを選択",
+  "nuxeo.public.download.link": "ダウンロードリンク",
+  "nuxeo.public.download.button.copy": "リンクをコピー",
+  "nuxeo.public.download.button.revoke": "リンクを無効化",
+  "nuxeo.public.download.button.create": "リンクを作成",
+  "nuxeo.public.download.button.close": "閉じる"
+}
