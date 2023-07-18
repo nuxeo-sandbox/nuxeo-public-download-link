@@ -19,7 +19,6 @@
 
 package org.nuxeo.labs.download.link.mock;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
@@ -64,17 +63,17 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int sc, String msg) throws IOException {
+    public void sendError(int sc, String msg) {
         status = sc;
     }
 
     @Override
-    public void sendError(int sc) throws IOException {
+    public void sendError(int sc) {
         status = sc;
     }
 
     @Override
-    public void sendRedirect(String location) throws IOException {
+    public void sendRedirect(String location) {
 
     }
 
@@ -149,7 +148,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
+    public ServletOutputStream getOutputStream() {
         return new ServletOutputStream() {
             @Override
             public boolean isReady() {
@@ -162,14 +161,14 @@ public class MockHttpServletResponse implements HttpServletResponse {
             }
 
             @Override
-            public void write(int b) throws IOException {
+            public void write(int b) {
 
             }
         };
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter() {
         return null;
     }
 
@@ -204,7 +203,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void flushBuffer() throws IOException {
+    public void flushBuffer() {
 
     }
 

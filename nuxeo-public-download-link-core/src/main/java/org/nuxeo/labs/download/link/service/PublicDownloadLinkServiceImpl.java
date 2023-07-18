@@ -87,7 +87,7 @@ public class PublicDownloadLinkServiceImpl extends DefaultComponent implements P
     @Override
     public String setPublicDownloadPermission(DocumentModel doc, String xpath, Calendar begin, Calendar end) {
         ACL[] acls = getExistingDownloadPermission(doc, xpath);
-        if (acls.length <= 0) {
+        if (acls.length == 0) {
             CoreSession session = doc.getCoreSession();
             ACP acp = doc.getACP() != null ? doc.getACP() : new ACPImpl();
             String token = UUID.randomUUID().toString();
@@ -181,27 +181,22 @@ public class PublicDownloadLinkServiceImpl extends DefaultComponent implements P
             }
         }
 
-        return (ACL[]) finalACLs.stream().toArray(ACL[]::new);
+        return (ACL[]) finalACLs.toArray(ACL[]::new);
 
     }
 
     public ACL[] getExistingDownloadPermissions(DocumentModel doc) {
         ACP acp = doc.getACP() != null ? doc.getACP() : new ACPImpl();
-
-        ACL[] acls = Arrays.stream(acp.getACLs())
+        return Arrays.stream(acp.getACLs())
                            .filter(acl -> acl.getName().startsWith(PUBLIC_DOWNLOAD_ACL_PREFIX))
                            .toArray(ACL[]::new);
-
-        return acls;
     }
 
     public ACL[] getExistingDownloadPermission(DocumentModel doc, String xpath) {
         ACP acp = doc.getACP() != null ? doc.getACP() : new ACPImpl();
-        ACL[] acls = Arrays.stream(acp.getACLs())
+        return Arrays.stream(acp.getACLs())
                            .filter(acl -> acl.getName().startsWith(getACLPrefix(xpath)))
                            .toArray(ACL[]::new);
-
-        return acls;
     }
 
     public String getACLPrefix(String xpath) {

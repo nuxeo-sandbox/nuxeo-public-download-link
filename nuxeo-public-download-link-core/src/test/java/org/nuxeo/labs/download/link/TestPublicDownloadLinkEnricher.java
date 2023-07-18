@@ -22,6 +22,8 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
+import java.io.IOException;
+
 
 @RunWith(FeaturesRunner.class)
 @Features(PlatformFeature.class)
@@ -43,7 +45,7 @@ public class TestPublicDownloadLinkEnricher extends AbstractJsonWriterTest.Local
     }
 
     @Test
-    public void testEnricher() throws Exception {
+    public void testEnricher() throws IOException {
         DocumentModel doc = th.getTestDocument(session);
         publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         JsonAssert json = jsonAssert(doc, RenderingContext.CtxBuilder.enrich("document", PublicDownloadLinkEnricher.NAME).get());

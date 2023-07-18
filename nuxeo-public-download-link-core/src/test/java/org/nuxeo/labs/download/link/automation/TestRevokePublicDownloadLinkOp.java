@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationChain;
 import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -60,7 +61,7 @@ public class TestRevokePublicDownloadLinkOp {
     TestHelper th;
 
     @Test
-    public void testRevokeDownloadLink() throws Exception {
+    public void testRevokeDownloadLink() throws OperationException {
         DocumentModel doc = th.getTestDocument(session);
         publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         OperationContext ctx = new OperationContext();
@@ -73,7 +74,7 @@ public class TestRevokePublicDownloadLinkOp {
     }
 
     @Test
-    public void testRevokeDownloadLinkWithXpath() throws Exception {
+    public void testRevokeDownloadLinkWithXpath() throws OperationException {
         DocumentModel doc = th.getTestDocument(session);
         publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES, null, null);
         OperationContext ctx = new OperationContext();
@@ -86,7 +87,7 @@ public class TestRevokePublicDownloadLinkOp {
     }
 
     @Test
-    public void testRevokeAllDownloadLink() throws Exception {
+    public void testRevokeAllDownloadLink() throws OperationException {
         DocumentModel doc = th.getTestDocument(session);
         publicDownloadLinkService.setPublicDownloadPermission(doc, FILE_CONTENT, null, null);
         publicDownloadLinkService.setPublicDownloadPermission(doc, FILES_FILES, null, null);
