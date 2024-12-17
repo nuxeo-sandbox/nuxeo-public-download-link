@@ -2,7 +2,7 @@ package org.nuxeo.labs.download.link;
 
 import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

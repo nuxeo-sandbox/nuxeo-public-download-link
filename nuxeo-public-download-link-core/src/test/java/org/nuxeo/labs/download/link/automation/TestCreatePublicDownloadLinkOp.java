@@ -25,7 +25,7 @@ import static org.nuxeo.labs.download.link.helpers.TestHelper.FILE_CONTENT;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.json.JSONObject;
 import org.junit.Assert;
