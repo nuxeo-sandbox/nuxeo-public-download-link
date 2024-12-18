@@ -19,21 +19,17 @@
 
 package org.nuxeo.labs.download.link.aws;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.services.cloudfront.AmazonCloudFrontClient;
-import com.amazonaws.services.cloudfront.AmazonCloudFrontClientBuilder;
-import com.amazonaws.services.cloudfront.model.CreateInvalidationRequest;
-import com.amazonaws.services.cloudfront.model.InvalidationBatch;
-import com.amazonaws.services.cloudfront.model.Paths;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.io.download.DownloadService;
 import org.nuxeo.labs.download.link.service.PublicDownloadLinkBuilder;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.aws.NuxeoAWSCredentialsProvider;
-
-import java.net.URI;
-import java.util.UUID;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
+import software.amazon.awssdk.services.cloudfront.model.CreateInvalidationRequest;
+import software.amazon.awssdk.services.cloudfront.model.CreateInvalidationResponse;
+import software.amazon.awssdk.services.cloudfront.model.Paths;
+import software.amazon.awssdk.services.cloudfront.model.InvalidationBatch;
 
 import static org.nuxeo.ecm.core.io.download.DownloadService.NXFILE;
 import static org.nuxeo.labs.download.link.service.PublicDownloadLinkServiceImpl.PUBLIC_DOWNLOAD_PATH;
@@ -56,13 +52,9 @@ public class CloudfrontPublicDownloadLinkBuilder implements PublicDownloadLinkBu
     @Override
     public void publicDownloadPermissionRevoked(DocumentModel doc, String xpath, String link) {
         String distributionId = Framework.getProperty(CLOUDFRONT_DISTRIB_ID_PROPERTY);
-        AWSCredentialsProvider awsCredentialsProvider = NuxeoAWSCredentialsProvider.getInstance();
-        AmazonCloudFrontClient client =  (AmazonCloudFrontClient) AmazonCloudFrontClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider).build();
-        URI uri = URI.create(link);
-        Paths invalidation_paths = new Paths().withItems(uri.getPath()).withQuantity(1);
-        InvalidationBatch invalidation_batch = new InvalidationBatch(invalidation_paths, UUID.randomUUID().toString());
-        CreateInvalidationRequest invalidation = new CreateInvalidationRequest(distributionId, invalidation_batch);
-        client.createInvalidation(invalidation);
+        CloudFrontClient cloudFrontClient = CloudFrontClient.builder().credentialsProvider(ProfileCredentialsProvider.create()).build();
+        InvalidationBatch invalidationBatch = InvalidationBatch.builder().paths(Paths.builder().quantity(1).items(link).build()).callerReference(String.valueOf(System.currentTimeMillis())).build();
+        CreateInvalidationRequest invalidationRequest = CreateInvalidationRequest.builder().distributionId(distributionId).invalidationBatch(invalidationBatch) .build();
+        CreateInvalidationResponse response = cloudFrontClient.createInvalidation(invalidationRequest);
     }
 }
