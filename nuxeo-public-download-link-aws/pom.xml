@@ -25,9 +25,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-cloudfront</artifactId>
-            <scope>provided</scope>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>cloudfront</artifactId>
+            <version>${aws.version}</version>
         </dependency>
         <dependency>
             <groupId>org.nuxeo.ecm.core</groupId>
