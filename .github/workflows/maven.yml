@@ -43,7 +43,7 @@ jobs:
         run: mvn -B install --file pom.xml -DskipDocker=true
 
       - name: Publish package
-        run:  cd nuxeo-public-link-core && mvn -B deploy -DskipDocker=true -DskipTests=true
+        run:  cd nuxeo-public-download-link-core && mvn -B deploy -DskipDocker=true -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
