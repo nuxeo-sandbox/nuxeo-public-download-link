@@ -43,4 +43,17 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/nuxeo-sandbox/nuxeo-public-download-link</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/nuxeo-sandbox/nuxeo-public-download-link</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
