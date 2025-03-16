@@ -45,6 +45,11 @@ jobs:
       - name: Build with Maven
         run: mvn -B install --file pom.xml -DskipDocker=true
 
+      - name: Publish to maven repository
+        run: mvn -B deploy -DskipDocker=true -DskipTests=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Copy file
         run: mkdir staging && cp ${{ vars.MP_TARGET_PATH }} staging/package.zip
 
