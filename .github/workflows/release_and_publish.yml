@@ -48,7 +48,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Release with Maven
-        run: mvn -B release:prepare -DpushReleaseChanges=true -Darguments="-DskipDocker=true"
+        run: |
+          mvn -B release:prepare -DpushReleaseChanges=true -Darguments="-DskipDocker=true"
+          mvn -B release:perform -Darguments="-DskipDocker=true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
